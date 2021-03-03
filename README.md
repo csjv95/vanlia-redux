@@ -1,70 +1,67 @@
-# Getting Started with Create React App
+# Reduex
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## what
 
-## Available Scripts
+Redux는 "action"이라는 이벤트를 사용하여 애플리케이션 상태를 관리하고 업데이트하기위한 패턴 및 라이브러리입니다. 상태가 예측 가능한 방식으로만 업데이트 될 수 있도록 보장하는 규칙과 함께 전체 애플리케이션에서 사용해야하는 상태에 대한 중앙 저장소 역할을합니다.
 
-In the project directory, you can run:
+## why
 
-### `yarn start`
+Redux는 글로벌 상태를 관리하는데 도움이 됩니다.
+Redux에서 사용하는 패턴과 도구를 사용하면 앱의 상태가 언제,어디서,왜, 어떻게 업데이트 되는지, 그리고 이러한 변경이 일어날때 앱의 로직이 어떻게 작동하는지 보다 쉽게 이해할 수 있습니다
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## when
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+모든 앱에서 Redux가 필요하고 무조건 좋은것은 아닙니다 다음과 같이 필요로 할때 사용하는게 좋습니다
 
-### `yarn test`
+- 앱의 여러 위치에 필요한 많은 양의 상태(state)가 있을때
+- 상태가 시간이 지남에 따라 자주 업데이트될떄
+- 해당 상태를 업데이트하는 논리가 복잡할땨
+- 앱 중간에 대형 코드 베이스르 가지고 있고 많은 사람들이 작업을 할때
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## # Vanilla reduex
 
-### `yarn build`
+step 1
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- 앱의 상태 전부는 하나의 저장소인 store 객체 트리에 저장됩니다
+- 상태 트리를 변경 하는 유일한 방법은 무엇이 일어날지 서술하는 객체인 action을 보냅니다
+- action이 상태 트리를 어떻게 변경할지 reduce에 명시해야 합니다
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+<!-- redux  
+{
+  dispatch: ƒ dispatch(action)
+  getState: ƒ getState()
+  replaceReducer: ƒ replaceReducer(nextReducer)
+  subscribe: ƒ subscribe(listener)
+  Symbol(observable): ƒ observable()
+  __proto__: Object
+}
+-->
 
-### `yarn eject`
+import {createStore} from 'redux';
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+//2. reduce 함수는 각각의 action이 state를 어떻게 변경할지 작성합니다
+function reducer(state,action) {
+  switch(store.type) {
+    case 'increase' :
+    return state +1;
+    case 'decrease' :
+    return state -1;
+  }
+}
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+//1. 앱의 상태를 보관하는 redux 저장소를 만듭니다
+const store = createStore(reducer);
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+//subscribe 상태변화에 따라 ui를 변경 가능하게 하줍니다
+//getState state를 가져옵니다
+store.subscribe(()=> {
+  return console.log(getState());
+})
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+//dispatch action으로 내부 상태를 변경 
+store.dispatch({type : 'increment'}); // reducer에서 increment => state + 1 => state = 1
+store.dispath({type : 'decrement'}); //reducer에서 decrement => state -1 => state = 0
+```

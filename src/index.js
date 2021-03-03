@@ -1,17 +1,33 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import {createStore} from 'redux';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const plus = document.querySelector('.plus');
+const minus = document.querySelector('.minus');
+const number = document.querySelector('.number');
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const reducer = (state = 0, action) => {
+  console.log(state, action);
+  switch (action.type) {
+    case 'increment':
+      return state + 1;
+    case 'decrement' :
+      return state - 1;
+    default: return state;
+  }
+
+}
+
+const store = createStore(reducer);
+
+store.subscribe(()=> {
+  number.innerHTML = store.getState();
+})
+
+
+plus.addEventListener('click', ()=> {
+  console.log(store);
+  return store.dispatch({type : 'increment'});
+})
+
+minus.addEventListener('click', () => {
+  return store.dispatch({type : 'decrement'})
+})
