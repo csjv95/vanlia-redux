@@ -1,33 +1,56 @@
-import {createStore} from 'redux';
+import { createStore } from "redux";
 
-const plus = document.querySelector('.plus');
-const minus = document.querySelector('.minus');
-const number = document.querySelector('.number');
+const input = document.querySelector(".input");
+const btn = document.querySelector(".btn");
+const list = document.querySelector(".list");
 
-const reducer = (state = 0, action) => {
-  console.log(state, action);
+const reducer = (state = [], action) => {
   switch (action.type) {
-    case 'increment':
-      return state + 1;
-    case 'decrement' :
-      return state - 1;
-    default: return state;
+    case "add":
+      return [{ text: action.text, id: Date.now() }, ...state];
+    case "delete":
+      return state.filter((toDo) => toDo.id !== action.id);
+    default:
+      return state;
   }
-
-}
+};
 
 const store = createStore(reducer);
 
-store.subscribe(()=> {
-  number.innerHTML = store.getState();
-})
+const paintToDos = () => {
+  const toDos = store.getState();
+  list.innerHTML = "";
+  toDos.map((todo) => {
+    const li = document.createElement('li');
+    const li__btn = document.createElement('button');
+    li__btn.innerHTML = 'DEL';
+    li.id = todo.id;
+    li.innerHTML = todo.text;
+    li.appendChild(li__btn);
 
+    li__btn.addEventListener('click', (event) => {
+      const toDoId = parseInt(event.target.parentNode.id);  //HTML로 받은 id는 string형태
+      console.log(event.target.parentNode.id);
+      console.log(toDoId);
+      store.dispatch({type : 'delete', id : toDoId})
+    })
 
-plus.addEventListener('click', ()=> {
-  console.log(store);
-  return store.dispatch({type : 'increment'});
-})
+    return list.appendChild(li);
+  });
 
-minus.addEventListener('click', () => {
-  return store.dispatch({type : 'decrement'})
-})
+};
+
+store.subscribe(paintToDos);
+
+const dispatchAddToDo = (toDo) => {
+  store.dispatch({ type: "add", text: toDo });
+};
+
+const btnClick = (event) => {
+  event.preventDefault();
+  const toDo = input.value;
+  input.value = "";
+  dispatchAddToDo(toDo);
+};
+
+btn.addEventListener("click", btnClick);
