@@ -39,15 +39,15 @@ Redux에서 사용하는 패턴과 도구를 사용하면 앱의 상태가 언�
 }
 -->
 
-import {createStore} from 'redux'; //1. state 저장소를 사용하기 위해 import
+import {createStore} from "redux"; //1. state 저장소를 사용하기 위해 import
 
 
 //3. reducer 함수는 각각의 action이 state를 어떻게 변경할지 작성합니다
 function reducer(state,action) {
   switch(store.type) {
-    case 'increase' :
+    case "increase" :
     return state +1;
-    case 'decrease' :
+    case "decrease" :
     return state -1;
   }
 }
@@ -62,8 +62,8 @@ store.subscribe(()=> {
 })
 
 //dispatch action으로 내부 상태를 변경 
-store.dispatch({type : 'increment'}); // reducer에서 increment => state + 1 => state = 1
-store.dispath({type : 'decrement'}); //reducer에서 decrement => state -1 => state = 0
+store.dispatch({type : "increment"}); // reducer에서 increment => state + 1 => state = 1
+store.dispath({type : "decrement"}); //reducer에서 decrement => state -1 => state = 0
 ```
 
 ### step 2
@@ -81,9 +81,9 @@ const list = document.querySelector(".list");
  // 3. reducer 함수는 각각의 action이 state를 어떻게 변경할지 작성합니다
 const reducer = (state = [], action) => {
   switch (action.type) {
-    case "add": // dispatch 'add'가 action에 보내지면 
+    case "add": // dispatch "add"가 action에 보내지면 
       return [{ text: action.text, id: Date.now() }, ...state]; // state에 받은 text와 id를 저장합니다 
-    case "delete": // dispatch 'delete'가 action에 보내지면 
+    case "delete": // dispatch "delete"가 action에 보내지면 
       return state.filter((toDo) => toDo.id !== action.id); // action으로 받은 id와 state에 있는 각각의 id를 비교해서 return 합니다
     default:
       return state;
@@ -96,19 +96,19 @@ const paintToDos = () => {
   const toDos = store.getState();
   list.innerHTML = "";
   toDos.map((todo) => {
-    const li = document.createElement('li');
-    const li__btn = document.createElement('button');
-    li__btn.innerHTML = 'DEL';
+    const li = document.createElement("li");
+    const li__btn = document.createElement("button");
+    li__btn.innerHTML = "DEL";
     li.id = todo.id;
     li.innerHTML = todo.text;
     li.appendChild(li__btn);
 
     // delete 버튼이 클릭될때 현재의 id값을 action에 업데이트 합니다
-    li__btn.addEventListener('click', (event) => {
+    li__btn.addEventListener("click", (event) => {
       const toDoId = parseInt(event.target.parentNode.id);  //HTML로 받은 id는 string형태
       console.log(event.target.parentNode.id);
       console.log(toDoId);
-      store.dispatch({type : 'delete', id : toDoId})
+      store.dispatch({type : "delete", id : toDoId})
     })
 
     return list.appendChild(li);
